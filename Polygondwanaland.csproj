@@ -8,8 +8,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="FlatUI\**" />
+    <EmbeddedResource Remove="FlatUI\**" />
+    <None Remove="FlatUI\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="raylib" Version="4.5.0" />
     <PackageReference Include="Raylib-cs" Version="4.5.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Fonts\OpenSans_Condensed-SemiBold.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Fonts\OpenSans_SemiCondensed-Bold.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polygondwanaland.FlatUI
+namespace Polygondwanaland.FlatUI5
 {
     public struct Rect
     {
@@ -61,11 +61,11 @@ namespace Polygondwanaland.FlatUI
     {
         public static readonly Color insideColor = new Color(99, 99, 99, 255);
         public static readonly Color outsideColor = new Color(25, 25, 25, 255);
-        public static Color defaultButtonColor = new Color(102, 102, 102, 255);
+        public static readonly Color defaultButtonColor = new Color(102, 102, 102, 255);
         public static readonly Color defaultTextFieldColor = new Color(204, 204, 204, 255);
         public static readonly Color defaultTextFieldOutlineColor = new Color(50, 50, 50, 255);
         public static readonly Color ChangedValueOutlineColor = new Color(255, 127, 0, 255);
-        public static int defaultOutlineThickness = 2;
+        private static int defaultOutlineThickness = 2;
 
         public static Font DefaultFont = new Font();
 
@@ -181,7 +181,7 @@ namespace Polygondwanaland.FlatUI
             if (draw)
             {
                 SwitchBox(Rect, IsMouseInRect(Rect) && Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON), defaultButtonColor);
-                Label(Rect, label, 16, 4);
+                Label(Rect, label, 20, 4);
                 return IsMouseInRect(Rect) && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON);
             }
             else
@@ -194,7 +194,7 @@ namespace Polygondwanaland.FlatUI
             if (draw)
             {
                 SwitchBox(Rect, IsMouseInRect(Rect) && Raylib.IsMouseButtonDown(MouseButton.MOUSE_LEFT_BUTTON), insideColor);
-                Label(Rect, label, 16, 4);
+                Label(Rect, label, 20, 4);
                 return IsMouseInRect(Rect) && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON);
             }
             else
@@ -208,7 +208,7 @@ namespace Polygondwanaland.FlatUI
             if (draw)
             {
                 SwitchBox(Rect, IsMouseInRect(Rect) && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON), insideColor, outsideColor);
-                Label(Rect, label, 16, 4);
+                Label(Rect, label, 20, 4);
                 return IsMouseInRect(Rect) && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON);
             }
             else
@@ -240,7 +240,7 @@ namespace Polygondwanaland.FlatUI
         /// <param name="message"></param>
         /// <param name="side"></param>
         /// <param name="draw"></param>
-        public static void Label(Rect rect, string message, int fontSize = 16, int side = 0, bool draw = true)
+        public static void Label(Rect rect, string message, int fontSize = 20, int side = 0, bool draw = true)
         {
             if (draw)
             {
@@ -259,7 +259,7 @@ namespace Polygondwanaland.FlatUI
             }
         }
 
-        public static void Label(Rect rect, string message, Color color, int fontSize = 16, int side = 0, bool draw = true)
+        public static void Label(Rect rect, string message, Color color, int fontSize = 20, int side = 0, bool draw = true)
         {
             if (draw)
             {
@@ -502,7 +502,7 @@ namespace Polygondwanaland.FlatUI
                     x = Raylib.GetScreenWidth() - 100;
                 Rect numberDisplay = new Rect(x, SliderRect.y - 25, 100, 25);
                 Box(numberDisplay);
-                Label(numberDisplay, value.ToString(), 16, 4);
+                Label(numberDisplay, value.ToString(), 20, 4);
                 newValue = (Raylib.GetMouseX() - (Rect.x + halfThickSlider) - SliderDragOffset + halfThickSlider) / (Rect.width - SliderThickness) * valueSpan + minValue;
                 if (newValue < minValue) newValue = minValue;
                 if (newValue > maxValue) newValue = maxValue;
@@ -564,7 +564,7 @@ namespace Polygondwanaland.FlatUI
                     x = Raylib.GetScreenWidth() - 100;
                 Rect numberDisplay = new Rect(x, SliderRect.y - 25, 100, 25);
                 Box(numberDisplay);
-                Label(numberDisplay, value.ToString(), 16, 4);
+                Label(numberDisplay, value.ToString(), 20, 4);
                 newValue = (Raylib.GetMouseX() - (Rect.x + halfThickSlider) - SliderDragOffset + halfThickSlider) / (Rect.width - SliderThickness) * valueSpan + minValue;
                 if (newValue < minValue) newValue = minValue;
                 if (newValue > maxValue) newValue = maxValue;
@@ -600,7 +600,7 @@ namespace Polygondwanaland.FlatUI
             Rect ScreenRect = new Rect(0, 0, Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
             FlatUI.Box(ScreenRect, backgroundColor);
             FlatUI.Box(titleBarRect, TitleBarColor);
-            FlatUI.Label(titleBarDragRect, "Title", 16, 4);
+            FlatUI.Label(titleBarDragRect, "Title", 24, 4);
             if (FlatUI.Button(minimizeButtonRect, "-", TitleBarColor))
             {
                 Raylib.MinimizeWindow();

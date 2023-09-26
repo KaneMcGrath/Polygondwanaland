@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polygondwanaland.FlatUI
+namespace Polygondwanaland.FlatUI5
 {
     public class Window
     {
@@ -96,7 +96,7 @@ namespace Polygondwanaland.FlatUI
                     FlatUI.Box(rect, insideColor);
                 }
                 FlatUI.Box(titleBarRect, insideColor);
-                FlatUI.Label(titleBarDragRect, title, 16, 4);
+                FlatUI.Label(titleBarDragRect, title, 24, 4);
                 if (FlatUI.Button(minimizeButtonRect, "-"))
                 {
                     minimize = !minimize;
@@ -124,7 +124,7 @@ namespace Polygondwanaland.FlatUI
                     rect.x = Raylib.GetMouseX() - (int)dragXOffset;
                     rect.y = Raylib.GetMouseY() - (int)dragYOffset;
                     if (rect.x < 0) rect.x = 0;
-                    if (rect.y < 30) rect.y = 30;
+                    if (rect.y < 0) rect.y = 0;
                     if (rect.x > Raylib.GetScreenWidth() - rect.width) rect.x = Raylib.GetScreenWidth() - rect.width;
                     if (rect.y > Raylib.GetScreenHeight() - 30f) rect.y = Raylib.GetScreenHeight() - 30;
                 }
