@@ -128,6 +128,14 @@ namespace Polygondwanaland.FlatUI5
                     if (rect.x > Raylib.GetScreenWidth() - rect.width) rect.x = Raylib.GetScreenWidth() - rect.width;
                     if (rect.y > Raylib.GetScreenHeight() - 30f) rect.y = Raylib.GetScreenHeight() - 30;
                 }
+                if (Raylib.IsWindowResized())
+                {
+                    if (rect.x < 0) rect.x = 0;
+                    if (rect.y < 0) rect.y = 0;
+                    if (rect.x > Raylib.GetScreenWidth() - rect.width) rect.x = Raylib.GetScreenWidth() - rect.width;
+                    if (rect.y > Raylib.GetScreenHeight() - 30f) rect.y = Raylib.GetScreenHeight() - 30;
+                    UpdateRects();
+                }
             }
         }
 
