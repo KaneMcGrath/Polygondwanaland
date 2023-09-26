@@ -16,13 +16,9 @@ namespace Polygondwanaland
             while (!Raylib.WindowShouldClose())
             {
                 Raylib.BeginDrawing();
-                Raylib.ClearBackground(Color.BLACK);
-
 
                 KaneGameManager.Update();
                 
-
-
                 Raylib.EndDrawing();
             }
         }

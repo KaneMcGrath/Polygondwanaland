@@ -24,6 +24,11 @@ namespace Polygondwanaland.FlatUI5
             this.height = height;
         }
 
+        public static Rect FromCenter(int x, int y, int width, int height)
+        {
+            return new Rect(x - width / 2, y - height / 2, width, height);
+        }
+
         public static bool operator ==(Rect rect1, Rect rect2)
         {
             return rect1.Equals(rect2);
