@@ -74,7 +74,7 @@ namespace Polygondwanaland.FlatUI5
 
         public static Font DefaultFont = new Font();
 
-        private static void DrawRect(Rect rectangle, Color c)
+        public static void DrawRect(Rect rectangle, Color c)
         {
             Raylib.DrawRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height, c);
         }
@@ -222,12 +222,12 @@ namespace Polygondwanaland.FlatUI5
             }
         }
 
-        //public static void TooltipButton(Rect rect, string title, string content, int tabColor, bool draw = true)
+        //public static void TooltipButton(rect rect, string title, string content, int tabColor, bool draw = true)
         //{
         //    if (draw)
         //    {
-        //        SwitchBox(new Rect(rect.x + rect.width - 26f, rect.y + 4f, 26f, rect.height - 8f), IsMouseInRect(rect) && Input.GetKey(KeyCode.Mouse0), insideColor, outsideColor);
-        //        if (Button(new Rect(rect.x + rect.width - 28f, rect.y + 2f, 26f, rect.height - 4f), "?", ButtonStyle))
+        //        SwitchBox(new rect(rect.x + rect.width - 26f, rect.y + 4f, 26f, rect.height - 8f), IsMouseInRect(rect) && Input.GetKey(KeyCode.Mouse0), insideColor, outsideColor);
+        //        if (Button(new rect(rect.x + rect.width - 28f, rect.y + 2f, 26f, rect.height - 4f), "?", ButtonStyle))
         //        {
         //            ToolTipWindow.Tooltip(title, content, tabColor);
         //        }
@@ -282,6 +282,8 @@ namespace Polygondwanaland.FlatUI5
             }
         }
 
+        
+
         /// <summary>
         /// Styled Check Box, inverts colors when checked.  Includes a label to the left side of the box
         /// </summary>
@@ -299,12 +301,25 @@ namespace Polygondwanaland.FlatUI5
             Label(new Rect(Rect.x + 4, Rect.y, Rect.width, Rect.height), label);
             return value;
         }
-        public static string TextField(Rect Rect, string text, bool draw = true)
+        public static string TextField(Rect rect, string text, int fontSize = 20, int side = 0, bool draw = true)
         {
             if (draw)
             {
-                Box(Rect, defaultTextFieldColor, defaultTextFieldOutlineColor);
-                return TextField(Rect, text);
+
+                int x = rect.x;
+                int y = rect.y;
+                if (side == 1) { x = rect.x + rect.width / 2 - (int)(Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).X / 2f); }
+                else if (side == 2) { x = rect.x + rect.width - (int)Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).X; }
+                else if (side == 3) { y = rect.y + rect.height / 2 - (int)(Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).Y / 2f); }
+                else if (side == 4) { x = rect.x + rect.width / 2 - (int)(Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).X / 2f); ; y = rect.y + rect.height / 2 - (int)(Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).Y / 2f); }
+                else if (side == 5) { x = rect.x + rect.width - (int)Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).X; y = rect.y + rect.height / 2 - (int)(Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).Y / 2f); }
+                else if (side == 6) { y = rect.y + rect.height - (int)Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).Y; }
+                else if (side == 7) { x = rect.x + rect.width / 2 - (int)(Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).X / 2f); y = rect.y + rect.height - (int)Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).Y; }
+                else if (side == 8) { x = rect.x + rect.width - (int)Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).X; y = rect.y + rect.height - (int)Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).Y; }
+
+                Box(rect, defaultTextFieldColor, defaultTextFieldOutlineColor);
+                Label(rect, text, fontSize, side);
+                return TextHandler.EditableText(rect, new Vector2(x, y), text, fontSize);
             }
             else
                 return text;
@@ -581,6 +596,70 @@ namespace Polygondwanaland.FlatUI5
             }
 
             return newValue;
+        }
+
+        /// <summary>
+        /// Creates 4 rects that form an outline of the input rect
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <returns></returns>
+        public static Rect[] transparentOutlineRects(Rect rect, int thickness)
+        {
+            Rect[] result = new Rect[4];
+            result[0] = new Rect(rect.x, rect.y, rect.width, thickness);
+            result[1] = new Rect(rect.x, rect.y + rect.height - thickness, rect.width, thickness);
+            result[2] = new Rect(rect.x, rect.y + thickness, thickness, rect.height - thickness);
+            result[3] = new Rect(rect.x + rect.width - thickness, rect.y + thickness, thickness, rect.height - thickness);
+            return result;
+        }
+
+        public static void DrawOutline(Rect rect, int thickness, Color outlineColor)
+        {
+            Rect[] outline = transparentOutlineRects(rect, defaultOutlineThickness);
+
+            DrawRect(outline[0], outlineColor);
+            DrawRect(outline[1], outlineColor);
+            DrawRect(outline[2], outlineColor);
+            DrawRect(outline[3], outlineColor);
+        }
+
+        /// <summary>
+        /// bar that fills to represent progress towards a maximum
+        /// 0 = left>right, 1=top>bottom, 2 = right>left, 3 = bottom>top
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="progress"></param>
+        /// <param name="max"></param>
+        /// <param name="orientation"></param>
+        /// <param name="barTex"></param>
+        /// <param name="boxInsideTex"></param>
+        /// <param name="boxOutsideTex"></param>
+        public static void ProgressBar(Rect rect, float progress, float max, int orientation, Color barColor, Color boxOutlineColor, bool draw = true)
+        {
+            float value = Math.Min(progress, max);
+
+            DrawOutline(rect, defaultOutlineThickness, boxOutlineColor);
+
+            int doubleOutline = defaultOutlineThickness * 2;
+            if (orientation == 0)
+            {
+                DrawRect(new Rect(rect.x + defaultOutlineThickness, rect.y + defaultOutlineThickness, (int)((value / max) * (float)(rect.width - doubleOutline)), rect.height - doubleOutline), barColor);
+            }
+            if (orientation == 1)
+            {
+                DrawRect(new Rect(rect.x + defaultOutlineThickness, rect.y + defaultOutlineThickness, rect.width - doubleOutline, (int)((value / max) * (float)(rect.height - doubleOutline))), barColor);
+            }
+            if (orientation == 2)
+            {
+                int width = (int)((value / max) * (float)(rect.width - doubleOutline));
+                DrawRect(new Rect(rect.x + rect.width - defaultOutlineThickness - width, rect.y + defaultOutlineThickness, width, rect.height - doubleOutline), barColor);
+            }
+            if (orientation == 3)
+            {
+                int height = (int)((value / max) * (float)(rect.height - doubleOutline));
+                DrawRect(new Rect(rect.x + defaultOutlineThickness, rect.y + rect.height - defaultOutlineThickness - height, rect.width - doubleOutline, height), barColor);
+            }
+
         }
 
         public static bool isDragging = false;

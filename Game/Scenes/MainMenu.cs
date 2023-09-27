@@ -13,6 +13,9 @@ namespace Polygondwanaland.Game.Scenes
     {
         private static Window MainWindow = new Window(Rect.FromCenter(Tools.ScreenCenterX(), Tools.ScreenCenterY(), 300, 800), "Polygondwanaland", new Color(232,75,75,255)) { showWindow = true };
         private static Color ClearColor = new Color(41, 75, 71, 255);
+
+        private static string debugEditableString = "Hello Text Handler";
+
         public static void Update()
         {
             Raylib.ClearBackground(ClearColor);
@@ -35,6 +38,8 @@ namespace Polygondwanaland.Game.Scenes
                 {
                     KaneGameManager.CurrentScene = 2;
                 }
+
+                debugEditableString = FlatUI.TextField(MainWindow.IndexToRect(20), debugEditableString, 30);
             }
         }
     }
