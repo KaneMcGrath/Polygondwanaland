@@ -14,8 +14,8 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
 {
     public static class GameOfLife
     {
-        public static int GameWidth = 500;
-        public static int GameHeight = 500;
+        public static int GameWidth = 1500;
+        public static int GameHeight = 1500;
         public static bool[,] Game = new bool[GameWidth, GameHeight];
         public static bool[,] Game2 = new bool[GameWidth, GameHeight];
         public static bool GameSetup = false;
@@ -115,8 +115,8 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
                 }
                 if (FlatUI.Button(SettingsWindow.IndexToRect(7), "Randomize Board"))
                 {
-                    GameHeight = 502;
-                    GameWidth = 502;
+                    GameHeight = 702;
+                    GameWidth = 702;
                     Game = new bool[GameWidth, GameHeight];
                     Game2 = new bool[GameWidth, GameHeight];
                     for (int x = 1; x < GameWidth - 1; x++)
@@ -130,8 +130,8 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
                 }
                 if (FlatUI.Button(SettingsWindow.IndexToRect(8), "Small Board"))
                 {
-                    GameHeight = 12;
-                    GameWidth = 12;
+                    GameHeight = 62;
+                    GameWidth = 62;
                     Game = new bool[GameWidth, GameHeight];
                     Game2 = new bool[GameWidth, GameHeight];
                     for (int x = 1; x < GameWidth - 1; x++)
