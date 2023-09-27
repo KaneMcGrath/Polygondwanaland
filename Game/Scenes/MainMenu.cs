@@ -27,9 +27,13 @@ namespace Polygondwanaland.Game.Scenes
             MainWindow.OnGUI();
             if (MainWindow.ContentVisible())
             {
-                if (FlatUI.Button(MainWindow.IndexToRect(0), "Particle"))
+                if (FlatUI.Button(MainWindow.IndexToRect(0), "Particle Sim"))
                 {
                     KaneGameManager.CurrentScene = 1;
+                }
+                if (FlatUI.Button(MainWindow.IndexToRect(1), "Celular Automata"))
+                {
+                    KaneGameManager.CurrentScene = 2;
                 }
             }
         }

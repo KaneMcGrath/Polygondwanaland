@@ -292,11 +292,11 @@ namespace Polygondwanaland.FlatUI5
         {
             if (!draw) return value;
             SwitchBox(new Rect(Rect.x + Rect.width - 28, Rect.y + 2, 26, Rect.height - 4), value);
-            if (Button(new Rect(Rect.x + Rect.width - 28, Rect.y + 2, 26, Rect.height - 4), ""))
+            if (IsMouseInRect(Rect) && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
             {
                 return !value;
             }
-            Label(Rect, label);
+            Label(new Rect(Rect.x + 4, Rect.y, Rect.width, Rect.height), label);
             return value;
         }
         public static string TextField(Rect Rect, string text, bool draw = true)
@@ -648,6 +648,21 @@ namespace Polygondwanaland.FlatUI5
         {
             return Raylib.GetMouseX() > rect.x && Raylib.GetMouseX() < rect.x + rect.width && Raylib.GetMouseY() > rect.y && Raylib.GetMouseY() < rect.y + rect.height;
         }
+
+        /// <summary>
+        /// Parity to Raylib.DrawText()
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="posX"></param>
+        /// <param name="posY"></param>
+        /// <param name="fontSize"></param>
+        /// <param name="color"></param>
+        public static void DrawText(string text, int posX, int posY, int fontSize, Color color)
+        {
+            Raylib.DrawTextEx(DefaultFont, text, new Vector2(posX, posY), fontSize, 0, color);
+        }
+
+
         /// <summary>
         /// Struct representing a point.
         /// </summary>
@@ -662,6 +677,8 @@ namespace Polygondwanaland.FlatUI5
                 return new System.Drawing.Point(point.X, point.Y);
             }
         }
+
+
 
         /// <summary>
         /// Retrieves the cursor's position, in screen coordinates.

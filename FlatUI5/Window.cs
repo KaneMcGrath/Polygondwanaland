@@ -18,6 +18,8 @@ namespace Polygondwanaland.FlatUI5
         public int MinimizedWidth;
         public bool isDragging = false;
 
+        public Constraints constraints = new Constraints();
+
         public static int ItemHeight = 30;
 
         private Rect titleBarRect;
@@ -123,20 +125,22 @@ namespace Polygondwanaland.FlatUI5
                 {
                     rect.x = Raylib.GetMouseX() - (int)dragXOffset;
                     rect.y = Raylib.GetMouseY() - (int)dragYOffset;
-                    if (rect.x < 0) rect.x = 0;
-                    if (rect.y < 0) rect.y = 0;
-                    if (rect.x > Raylib.GetScreenWidth() - rect.width) rect.x = Raylib.GetScreenWidth() - rect.width;
-                    if (rect.y > Raylib.GetScreenHeight() - 30f) rect.y = Raylib.GetScreenHeight() - 30;
+                    ConstrainWindow();
                 }
                 if (Raylib.IsWindowResized())
                 {
-                    if (rect.x < 0) rect.x = 0;
-                    if (rect.y < 0) rect.y = 0;
-                    if (rect.x > Raylib.GetScreenWidth() - rect.width) rect.x = Raylib.GetScreenWidth() - rect.width;
-                    if (rect.y > Raylib.GetScreenHeight() - 30f) rect.y = Raylib.GetScreenHeight() - 30;
-                    UpdateRects();
+                    ConstrainWindow();
                 }
             }
+        }
+
+        private void ConstrainWindow()
+        {
+            if (rect.x < 0 + constraints.left) rect.x = 0 + constraints.left;
+            if (rect.y < 0 + constraints.top) rect.y = 0 + constraints.top;
+            if (rect.x > Raylib.GetScreenWidth() - rect.width - constraints.right) rect.x = Raylib.GetScreenWidth() - rect.width - constraints.right;
+            if (rect.y > Raylib.GetScreenHeight() - 30f - constraints.bottom) rect.y = Raylib.GetScreenHeight() - 30 - constraints.bottom;
+            UpdateRects();
         }
 
         /// <summary>
@@ -179,6 +183,34 @@ namespace Polygondwanaland.FlatUI5
                 divisions = 1;
             }
             return new Rect(ContentRect.x + ContentRect.width / divisions * n, ContentRect.y + i * ItemHeight, width * (ContentRect.width / divisions), ItemHeight);
+        }
+    }
+
+
+    public struct Constraints
+    {
+        public int left, right, top, bottom;
+
+        public Constraints()
+        {
+            left = 0;
+            right = 0;
+            top = 0; 
+            bottom = 0;
+        }
+        /// <summary>
+        /// left, right, top, bottom
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="top"></param>
+        /// <param name="bottom"></param>
+        public Constraints(int left, int right, int top, int bottom)
+        {
+            this.left = left;
+            this.right = right;
+            this.top = top;
+            this.bottom = bottom;
         }
     }
 }

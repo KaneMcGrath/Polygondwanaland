@@ -5,6 +5,8 @@ using System.IO;
 using Polygondwanaland.FlatUI5;
 using Polygondwanaland.Game;
 using Polygondwanaland.Game.Scenes;
+using Polygondwanaland.Game.Scenes.ParticleSim;
+using Polygondwanaland.Game.Scenes.CelularAutomata;
 
 namespace Polygondwanaland.Game
 {
@@ -30,6 +32,10 @@ namespace Polygondwanaland.Game
             else if (CurrentScene == 1)
             {
                 ParticleSim.Update();
+            }
+            else if (CurrentScene == 2)
+            {
+                GameOfLife.Update();
             }
         }
     }
