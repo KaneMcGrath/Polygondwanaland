@@ -1,4 +1,6 @@
-﻿using Raylib_cs;
+﻿using Polygondwanaland.Game;
+using Polygondwanaland.Game.Scenes;
+using Raylib_cs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +17,7 @@ namespace Polygondwanaland.FlatUI5
     {
         public static bool IsEdititingText = false;
 
-        public static bool TextDebugVis = true;
+        public static bool TextDebugVis = false;
 
         //The Cursor will be defined in relation to the string it is editing
 
@@ -24,6 +26,8 @@ namespace Polygondwanaland.FlatUI5
         public static int SelectionEndIndex = 0;    //if highlighting text highlight the range from CursorIndex to SelectionEndIndex
 
         public static float[] CurrentStringSpacing = new float[3];
+
+        private static char lastChar = ' ';
 
         /// <summary>
         /// 
@@ -36,25 +40,79 @@ namespace Polygondwanaland.FlatUI5
         {
             if (IsEdititingText)
             {
-                if (TextDebugVis) FlatUI.DrawOutline(selectArea, 1, Color.ORANGE);
-                if (!FlatUI.IsMouseInRect(selectArea) && Raylib.IsMouseButtonPressed(0))
+                while ( true )
                 {
-                    IsEdititingText = false;
+                    int c = Raylib.GetCharPressed();
+                    if (c == 0) break;
+                    lastChar = char.ConvertFromUtf32(c)[0];
                 }
+                    
+
+                if (TextDebugVis)
+                {
+                    FlatUI.DrawOutline(selectArea, 1, Color.ORANGE);
+                    FlatUI.Label(new Rect (10, 160, 100, 30), "Key:" + lastChar.ToString());
+                    FlatUI.Label(new Rect (10, 190, 100, 30), "Raw:" + Raylib.GetKeyPressed().ToString());
+                }
+                
                 Vector2 textSize = Raylib.MeasureTextEx(FlatUI.DefaultFont, text, fontSize, 0);
                 Rect textArea = new Rect((int)textOrigin.X, (int)textOrigin.Y, (int)textSize.X, (int)textSize.Y);
                 if (TextDebugVis) FlatUI.DrawOutline(textArea, 1, Color.YELLOW);
 
                 //draw cursor
                 float widthSum = 0f;
-                for (int c = 0; c < text.Length; c++)
+                for (int c = 0; c < text.Length + 1; c++)
                 {
-                    float charwidth = Raylib.MeasureTextEx(FlatUI.DefaultFont, text.Substring(c, 1), fontSize, 0).X;
                     if (c == CursorIndex)
                     {
                         FlatUI.DrawRect(new Rect(textArea.x + (int)(widthSum), textArea.y, 2, textArea.height), Color.BLACK);
+                        break;
                     }
-                    widthSum += charwidth;
+                    if (c < text.Length)
+                    {
+                        float charwidth = Raylib.MeasureTextEx(FlatUI.DefaultFont, text.Substring(c, 1), fontSize, 0).X;
+                        widthSum += charwidth;
+                    }
+                }
+
+                if (Raylib.IsMouseButtonPressed(0))
+                {
+                    if (FlatUI.IsMouseInRect(selectArea))
+                    {
+                        if (FlatUI.IsMouseInRect(textArea))
+                        {
+                            if (Raylib.IsMouseButtonPressed(0))
+                            {
+                                float widthSum3 = 0f;
+                                for (int c = 0; c < text.Length; c++)
+                                {
+                                    float charwidth = Raylib.MeasureTextEx(FlatUI.DefaultFont, text.Substring(c, 1), fontSize, 0).X;
+                                    float p = Raylib.GetMouseX() - textArea.x;
+
+                                    if (p > widthSum3 && p < widthSum3 + charwidth)
+                                    {
+                                        if (p < widthSum3 + (charwidth / 2f))
+                                        {
+                                            CursorIndex = c;
+                                        }
+                                        else
+                                        {
+                                            CursorIndex = c + 1;
+                                        }
+                                    }
+                                    widthSum3 += charwidth;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            CursorIndex = text.Length;
+                        }
+                    }
+                    else
+                    {
+                        IsEdititingText = false;
+                    }
                 }
 
 
@@ -94,18 +152,25 @@ namespace Polygondwanaland.FlatUI5
                             widthSum2 += charwidth;
                         }
                     }
-                    if (Raylib.IsMouseButtonPressed(0))
+                }
+            }
+            else
+            {
+                if (FlatUI.IsMouseInRect(selectArea) && Raylib.IsMouseButtonPressed(0))
+                {
+                    IsEdititingText = true;
+                    Vector2 textSize = Raylib.MeasureTextEx(FlatUI.DefaultFont, text, fontSize, 0);
+                    Rect textArea = new Rect((int)textOrigin.X, (int)textOrigin.Y, (int)textSize.X, (int)textSize.Y);
+                    if (FlatUI.IsMouseInRect(textArea))
                     {
                         float widthSum3 = 0f;
                         for (int c = 0; c < text.Length; c++)
                         {
                             float charwidth = Raylib.MeasureTextEx(FlatUI.DefaultFont, text.Substring(c, 1), fontSize, 0).X;
-
                             float p = Raylib.GetMouseX() - textArea.x;
 
                             if (p > widthSum3 && p < widthSum3 + charwidth)
                             {
-                               
                                 if (p < widthSum3 + (charwidth / 2f))
                                 {
                                     CursorIndex = c;
@@ -118,21 +183,9 @@ namespace Polygondwanaland.FlatUI5
                             widthSum3 += charwidth;
                         }
                     }
-                }
-            }
-            else
-            {
-                if (FlatUI.IsMouseInRect(selectArea) && Raylib.IsMouseButtonPressed(0))
-                {
-                    IsEdititingText = true;
-                    Vector2 textSize = Raylib.MeasureTextEx(FlatUI.DefaultFont, text, fontSize, 0);
-                    Rect textArea = new Rect((int)textOrigin.X, (int)textOrigin.Y, (int)textSize.X, (int)textSize.Y);
-                    if (FlatUI.IsMouseInRect(textArea))
+                    else
                     {
-                        if (TextDebugVis)
-                        {
-                            
-                        }
+                        CursorIndex = text.Length;
                     }
                 }
             }
