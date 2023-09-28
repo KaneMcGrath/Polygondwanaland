@@ -89,25 +89,6 @@ namespace Polygondwanaland.FlatUI5
         {
             if (showWindow)
             {
-                if (isDragging)
-                {
-                    UpdateRects();
-                }
-                if (!minimize)
-                {
-                    FlatUI.Box(rect, insideColor);
-                }
-                FlatUI.Box(titleBarRect, insideColor);
-                FlatUI.Label(titleBarDragRect, title, 24, 4);
-                if (FlatUI.Button(minimizeButtonRect, "-"))
-                {
-                    minimize = !minimize;
-                    UpdateRects();
-                }
-                if (FlatUI.Button(closeButtonRect, "x"))
-                {
-                    showWindow = false;
-                }
                 if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
                 {
                     if (FlatUI.IsMouseInRect(titleBarDragRect))
@@ -130,6 +111,21 @@ namespace Polygondwanaland.FlatUI5
                 if (Raylib.IsWindowResized())
                 {
                     ConstrainWindow();
+                }
+                if (!minimize)
+                {
+                    FlatUI.Box(rect, insideColor);
+                }
+                FlatUI.Box(titleBarRect, insideColor);
+                FlatUI.Label(titleBarDragRect, title, 24, 4);
+                if (FlatUI.Button(minimizeButtonRect, "-"))
+                {
+                    minimize = !minimize;
+                    UpdateRects();
+                }
+                if (FlatUI.Button(closeButtonRect, "x"))
+                {
+                    showWindow = false;
                 }
             }
         }
