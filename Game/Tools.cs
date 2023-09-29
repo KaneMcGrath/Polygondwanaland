@@ -29,5 +29,22 @@ namespace Polygondwanaland.Game
         {
             return (random.Next(0, 100) < percent);
         }
+
+        /// <summary>
+        /// When called multiple times only returns true after a fixed amount of time after it was first called
+        /// then is reset
+        /// </summary>
+        /// <param name="timer"></param>
+        /// <param name="waitTime"></param>
+        /// <returns></returns>
+        public static bool timer(ref float timer, float waitTime)
+        {
+            if (timer <= Raylib.GetTime())
+            {
+                timer = (float)Raylib.GetTime() + waitTime;
+                return true;
+            }
+            return false;
+        }
     }
 }

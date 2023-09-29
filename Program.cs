@@ -9,7 +9,6 @@ namespace Polygondwanaland
         public static void Main(string[] args)
         {
             Raylib.InitWindow(1500, 1080, "Polygondwanaland");
-            Raylib.SetWindowState(ConfigFlags.FLAG_WINDOW_RESIZABLE);
 
             KaneGameManager.Init();
 

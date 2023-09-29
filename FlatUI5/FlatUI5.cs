@@ -458,8 +458,9 @@ namespace Polygondwanaland.FlatUI5
 
         //global variables to use between all sliders as we should only be using one at a time
         //and if I can get away with not making an object for this that would be sick
+        public static bool IsDraggingSlider = false;
+
         private static float SliderDragOffset = 0f;
-        private static bool IsDraggingSlider = false;
         private static float SliderThickness = 10f;
         private static Rect DefaultRect = new Rect();
         private static Rect HasSlider = DefaultRect;

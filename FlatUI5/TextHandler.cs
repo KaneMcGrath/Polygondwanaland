@@ -40,14 +40,6 @@ namespace Polygondwanaland.FlatUI5
         {
             if (IsEdititingText)
             {
-                while ( true )
-                {
-                    int c = Raylib.GetCharPressed();
-                    if (c == 0) break;
-                    lastChar = char.ConvertFromUtf32(c)[0];
-                }
-                    
-
                 if (TextDebugVis)
                 {
                     FlatUI.DrawOutline(selectArea, 1, Color.ORANGE);

@@ -31,6 +31,10 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
         private static bool drawDebugText = false;
         private static bool drawDebugNumbers = false;
 
+        private static float frameWaitTimer = 0f;
+        private static int stepsPerSecond = 100;
+        private static int maxStepsPerSecond = 100;
+
         private static void DrawBorders()
         {
             Raylib.DrawRectangle((int)(Tools.ScreenCenterX() + (CameraPos.X * zoomLevel) + 1f * zoomLevel), (int)(Tools.ScreenCenterY() + (CameraPos.Y * zoomLevel) + 1f * zoomLevel), GameWidth * (int)(20f * zoomLevel), (int)(18f * zoomLevel), Color.WHITE);
@@ -143,9 +147,12 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
                     }
                     GameSetup = true;
                 }
+                FlatUI.Label(SettingsWindow.IndexToRect(9), "Steps Per Second", 20, 7);
+                stepsPerSecond = (int)FlatUI.Slider(SettingsWindow.IndexToRect(10), (float)stepsPerSecond, 1f, (float)maxStepsPerSecond);
+                
             }
 
-            if (drawDebugText) { 
+            if (drawDebugText) {
                 getMouseCell();
                 FlatUI.Label(new Rect(10, 30, 100, 30), "Zoom:" + zoomLevel.ToString());
                 FlatUI.Label(new Rect(10, 60, 100, 30), "Camera:" + CameraPos.ToString());
@@ -155,7 +162,20 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
                 Raylib.DrawFPS(Raylib.GetScreenWidth() - 100, 0);
             }
             if (GameSetup && !GamePaused)
-                SimulateStep();
+            {
+                if (stepsPerSecond >= maxStepsPerSecond)
+                {
+                    SimulateStep();
+                }
+                else
+                {
+                    float waitTime = 1f / (float)stepsPerSecond;
+                    if (Tools.timer(ref frameWaitTimer, waitTime))
+                    {
+                        SimulateStep();
+                    }
+                }
+            }   
             //Raylib.DrawRectangle((int)CameraPos.X + (int)(50f * zoomLevel), (int)CameraPos.Y + (int)(50f * zoomLevel), (int)(10f * zoomLevel), (int)(10f * zoomLevel), Color.WHITE);
         }
 
@@ -163,6 +183,9 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
         {
             //(int)(Tools.ScreenCenterX() + (CameraPos.X * zoomLevel) + 20f * x * zoomLevel), (int)(Tools.ScreenCenterY() + (CameraPos.Y * zoomLevel) + 20f * y * zoomLevel), (int)(zoomLevel * 18f), (int)(zoomLevel * 18f)
             Vector2 mouse = Raylib.GetMousePosition();
+            int x = (int)mouse.X - (int)(CameraPos.X);
+            int y = (int)mouse.Y - (int)(CameraPos.Y);
+            FlatUI.DrawOutline(new Rect(x, y, (int)(zoomLevel * 20f), (int)(zoomLevel * 20f)), 1, Color.ORANGE);
 
             FlatUI.Label(new Rect(10, 90, 100, 30), "Mouse Cell X:" + (int)(Tools.ScreenCenterX() + (CameraPos.X * zoomLevel) + 20f * mouse.X * zoomLevel));
             FlatUI.Label(new Rect(10, 120, 100, 30), "Mouse Cell Y:" + (mouse.X - (CameraPos.X * zoomLevel)).ToString());
@@ -178,18 +201,6 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
                     for (int i = -1; i <= 1; i++)
                         for (int j = -1; j <= 1; j++)
                             if (Game[x + i,y + j]) neighbors++;
-
-                    //if (Game[x - 1, y - 1]) neighbors++;
-                    //if (Game[x    , y - 1]) neighbors++;
-                    //if (Game[x + 1, y - 1]) neighbors++;
-                    //
-                    //if (Game[x - 1, y    ]) neighbors++;
-                    //
-                    //if (Game[x + 1, y    ]) neighbors++;
-                    //
-                    //if (Game[x - 1, y + 1]) neighbors++;
-                    //if (Game[x    , y + 1]) neighbors++;
-                    //if (Game[x + 1, y + 1]) neighbors++;
 
                     if (Game[x, y])
                     {
@@ -252,8 +263,7 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
 
         private static void CameraControl()
         {
-
-            if (Raylib.IsMouseButtonDown(0) && !Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT) && !SettingsWindow.isDragging)
+            if (Raylib.IsMouseButtonDown(0) && !Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT) && !SettingsWindow.isDragging && !FlatUI.IsDraggingSlider && !FlatUI.IsMouseInRect(SettingsWindow.rect))
             {
                 CameraPos += Raylib.GetMouseDelta() / zoomLevel;
             }
