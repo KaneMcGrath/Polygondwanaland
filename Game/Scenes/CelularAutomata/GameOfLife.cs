@@ -53,9 +53,19 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
 
                 DrawBorders();
 
-                for (int x = 1; x < GameWidth - 1; x++)
+                int minX = Math.Max(1, (int)(((-1f * CameraPos.X * (zoomLevel) * zoomLevel) - Tools.ScreenCenterX()) / 20f));
+                int maxX = GameWidth - 1;
+                int minY = 1;
+                int maxY = GameHeight - 1;
+
+                FlatUI.Label(new Rect(10, 230, 100, 30), minX.ToString());
+                FlatUI.Label(new Rect(10, 260, 100, 30), maxX.ToString());
+                FlatUI.Label(new Rect(10, 290, 100, 30), minY.ToString());
+                FlatUI.Label(new Rect(10, 320, 100, 30), maxY.ToString());
+
+                for (int x = minX; x < maxX; x++)
                 {
-                    for (int y = 1; y < GameHeight - 1; y++)
+                    for (int y = minY; y < maxY; y++)
                     {
                         if (Game[x, y])
                             DrawCell(x, y);
@@ -119,10 +129,11 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
                 }
                 if (FlatUI.Button(SettingsWindow.IndexToRect(7), "Randomize Board"))
                 {
-                    GameHeight = 702;
-                    GameWidth = 702;
+                    GameHeight = 902;
+                    GameWidth = 902;
                     Game = new bool[GameWidth, GameHeight];
                     Game2 = new bool[GameWidth, GameHeight];
+                    CheckedBitmap = new bool[GameWidth, GameHeight];
                     for (int x = 1; x < GameWidth - 1; x++)
                     {
                         for (int y = 1; y < GameHeight - 1; y++)
@@ -134,10 +145,11 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
                 }
                 if (FlatUI.Button(SettingsWindow.IndexToRect(8), "Small Board"))
                 {
-                    GameHeight = 62;
-                    GameWidth = 62;
+                    GameHeight = 102;
+                    GameWidth = 102;
                     Game = new bool[GameWidth, GameHeight];
                     Game2 = new bool[GameWidth, GameHeight];
+                    CheckedBitmap = new bool[GameWidth, GameHeight];
                     for (int x = 1; x < GameWidth - 1; x++)
                     {
                         for (int y = 1; y < GameHeight - 1; y++)
@@ -183,37 +195,31 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
         {
             //(int)(Tools.ScreenCenterX() + (CameraPos.X * zoomLevel) + 20f * x * zoomLevel), (int)(Tools.ScreenCenterY() + (CameraPos.Y * zoomLevel) + 20f * y * zoomLevel), (int)(zoomLevel * 18f), (int)(zoomLevel * 18f)
             Vector2 mouse = Raylib.GetMousePosition();
-            int x = (int)mouse.X - (int)(CameraPos.X);
-            int y = (int)mouse.Y - (int)(CameraPos.Y);
+            int x = Math.Max(1, (int)(((-1f * (CameraPos.X + mouse.X) * zoomLevel)) / 20f));
+            int y = Math.Max(1, (int)(((-1f * (CameraPos.Y + mouse.Y) * zoomLevel)) / 20f));
             FlatUI.DrawOutline(new Rect(x, y, (int)(zoomLevel * 20f), (int)(zoomLevel * 20f)), 1, Color.ORANGE);
 
             FlatUI.Label(new Rect(10, 90, 100, 30), "Mouse Cell X:" + (int)(Tools.ScreenCenterX() + (CameraPos.X * zoomLevel) + 20f * mouse.X * zoomLevel));
             FlatUI.Label(new Rect(10, 120, 100, 30), "Mouse Cell Y:" + (mouse.X - (CameraPos.X * zoomLevel)).ToString());
         }
 
+        private static bool[,] CheckedBitmap = new bool[GameWidth, GameHeight];
         private static void SimulateStep()
         {
             for (int x = 1; x < GameWidth - 1; x++)
             {
                 for (int y = 1; y < GameHeight - 1; y++)
                 {
-                    int neighbors = 0;
-                    for (int i = -1; i <= 1; i++)
-                        for (int j = -1; j <= 1; j++)
-                            if (Game[x + i,y + j]) neighbors++;
-
+                    CheckedBitmap[x, y] = false;
+                }
+            }
+            for (int x = 1; x < GameWidth - 1; x++)
+            {
+                for (int y = 1; y < GameHeight - 1; y++)
+                {
                     if (Game[x, y])
                     {
-                        neighbors--;
-                        
-                        if (neighbors < 2)      Game2[x, y] = false;
-                        else if (neighbors > 3) Game2[x, y] = false;
-                        else                    Game2[x, y] = true;
-                    }
-                    else
-                    {
-                        if (neighbors == 3) Game2[x, y] = true;
-                        else                Game2[x, y] = false;
+                        CheckCell(x, y);
                     }
                 }
             }
@@ -223,6 +229,56 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
                 {
                     Game[x,y] = Game2[x, y];
                 }
+            }
+                    
+        }
+
+        private static void CheckCell(int x, int y)
+        {
+                    int neighbors = 0;
+                    for (int i = -1; i <= 1; i++)
+                        for (int j = -1; j <= 1; j++)
+                    if (Game[x + i, y + j]) 
+                    {
+                        neighbors++;
+                    }
+                    else
+                    {
+                        CheckForGrowth(x + i, y + j);
+                    }
+
+                    if (Game[x, y])
+                    {
+                        neighbors--;
+                        
+                if (neighbors < 2) Game2[x, y] = false;
+                        else if (neighbors > 3) Game2[x, y] = false;
+                else Game2[x, y] = true;
+                    }
+                    else
+                    {
+                        if (neighbors == 3) Game2[x, y] = true;
+                else Game2[x, y] = false;
+                    }
+                }
+
+        private static void CheckForGrowth(int x, int y)
+        {
+            if (x == 0 || y == 0 || x == GameWidth - 1 || y == GameHeight - 1) return;
+            int neighbors = 0;
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+            {
+                    if (Game[x + i, y + j])
+                {
+                        neighbors++;
+                    }
+                }
+                }
+            if (neighbors == 3)
+            {
+                Game2[x, y] = true;
             }
                     
         }
