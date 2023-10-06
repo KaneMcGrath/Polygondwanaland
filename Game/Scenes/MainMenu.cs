@@ -19,6 +19,7 @@ namespace Polygondwanaland.Game.Scenes
         public static void Update()
         {
             Raylib.ClearBackground(ClearColor);
+            debugEditableString = FlatUI.TextField(new Rect(0, 0, Raylib.GetScreenWidth(), 30), debugEditableString, 30);
             if (MainWindow.showWindow == false)
             {
                 if (FlatUI.Button(Rect.FromCenter(Tools.ScreenCenterX(), Tools.ScreenCenterY(), 100, 30), "Begin!"))
@@ -38,8 +39,9 @@ namespace Polygondwanaland.Game.Scenes
                 {
                     KaneGameManager.CurrentScene = 2;
                 }
-
-                debugEditableString = FlatUI.TextField(MainWindow.IndexToRect(20), debugEditableString, 30);
+                TextHandler.TextDebugVis = FlatUI.Check(MainWindow.IndexToRect(3), TextHandler.TextDebugVis, "Text Debug View");
+                
+                
             }
         }
     }
