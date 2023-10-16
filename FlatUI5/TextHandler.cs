@@ -25,12 +25,10 @@ namespace Polygondwanaland.FlatUI5
 
         public static bool TextDebugVis = true;
 
-        //The Cursor will be defined in relation to the string it is editing
-
         public static int CursorIndex = 0;
         public static bool insert = true;           //toggle insert mode to replace text
 
-        public static bool IsSelection = false;     //if text is curently highlighted
+        public static bool IsSelection = true;     //if text is curently highlighted, but now is just a toggle for if you can select text
         public static int SelectionEndIndex = 0;    //if highlighting text highlight the range from CursorIndex to SelectionEndIndex
 
         public static float[] CurrentStringSpacing = new float[3];
@@ -113,35 +111,71 @@ namespace Polygondwanaland.FlatUI5
                             {
                                 if (InputManager.IsChar(key))
                                 {
-                                    text = text.Insert(CursorIndex, InputManager.KeyboardKeyToChar(key).ToString());
-                                    CursorIndex++;
+                                    if (SelectionEndIndex - CursorIndex > 0)
+                                    {
+                                        text = text.Remove(CursorIndex, SelectionEndIndex - CursorIndex);
+                                        text = text.Insert(CursorIndex, InputManager.KeyboardKeyToChar(key).ToString());
+                                        CursorIndex++;
+                                        SelectionEndIndex = CursorIndex;
+                                    }
+                                    else
+                                    {
+                                        text = text.Insert(CursorIndex, InputManager.KeyboardKeyToChar(key).ToString());
+                                        CursorIndex++;
+                                        SelectionEndIndex = CursorIndex;
+                                    }
                                     continue;
                                 }
                                 if (key == (int)KeyboardKey.KEY_LEFT)
                                 {
                                     if (CursorIndex > 0)
+                                    {
                                         CursorIndex--;
+                                        SelectionEndIndex= CursorIndex;
+                                    }
                                 }
                                 if (key == (int)KeyboardKey.KEY_RIGHT)
                                 {
                                     if (CursorIndex < text.Length - 1)
+                                    {
                                         CursorIndex++;
+                                        SelectionEndIndex = CursorIndex;
+                                    }
                                 }
                                 if (key == (int)KeyboardKey.KEY_BACKSPACE)
                                 {
-                                    if (CursorIndex > 0)
+                                    
+                                    if (CursorIndex <= text.Length)
                                     {
-                                        if (CursorIndex <= text.Length)
+                                        if (SelectionEndIndex - CursorIndex > 0)
+                                        {
+                                            text = text.Remove(CursorIndex, SelectionEndIndex - CursorIndex);
+                                            SelectionEndIndex = CursorIndex;
+                                        }
+                                        else if (CursorIndex > 0)
                                         {
                                             CursorIndex--;
+                                            SelectionEndIndex = CursorIndex;
                                             text = text.Remove(CursorIndex, 1);
                                         }
                                     }
+                                    
                                 }
                                 if (key == (int)KeyboardKey.KEY_DELETE)
                                 {
+
                                     if (CursorIndex < text.Length)
-                                        text = text.Remove(CursorIndex, 1);
+                                    {
+                                        if (SelectionEndIndex - CursorIndex > 0)
+                                        {
+                                            text = text.Remove(CursorIndex, SelectionEndIndex - CursorIndex);
+                                            SelectionEndIndex = CursorIndex;
+                                        }
+                                        else
+                                        {
+                                            text = text.Remove(CursorIndex, 1);
+                                        }
+                                    }
                                 }
                                 if (key == (int)KeyboardKey.KEY_HOME)
                                 {
@@ -175,11 +209,14 @@ namespace Polygondwanaland.FlatUI5
                         }
                     }
 
+                    //Sanity Checks in case I suck
+
                     //if the string is modified elsewhere keep our cursor inbounds
                     if (CursorIndex > text.Length)
                     {
                         CursorIndex = text.Length;
                     }
+                    if (SelectionEndIndex > text.Length) SelectionEndIndex = text.Length;
                     if (CursorIndex < 0) //not sure how this could ever happen
                     {
                         CursorIndex = 0;
@@ -233,6 +270,7 @@ namespace Polygondwanaland.FlatUI5
                             else
                             {
                                 CursorIndex = text.Length;
+                                SelectionEndIndex = text.Length;
                             }
                         }
                         else
@@ -273,10 +311,6 @@ namespace Polygondwanaland.FlatUI5
                                     }
                                     widthSum3 += charwidth;
                                 }
-                            }
-                            else
-                            {
-                                SelectionEndIndex = text.Length;
                             }
                         }
                     }

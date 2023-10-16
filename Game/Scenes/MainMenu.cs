@@ -21,7 +21,7 @@ namespace Polygondwanaland.Game.Scenes
         public static void Update()
         {
             Raylib.ClearBackground(ClearColor);
-            debugEditableString = FlatUI.TextField(new Rect(0, 0, Raylib.GetScreenWidth(), 30), debugEditableString, 30);
+            debugEditableString = FlatUI.TextField(new Rect(0, 30, Raylib.GetScreenWidth(), 30), debugEditableString, 30);
             if (MainWindow.showWindow == false)
             {
                 if (FlatUI.Button(Rect.FromCenter(Tools.ScreenCenterX(), Tools.ScreenCenterY(), 100, 30), "Begin!"))
@@ -35,7 +35,7 @@ namespace Polygondwanaland.Game.Scenes
             TextTestWindow.OnGUI();
             if (TextTestWindow.ContentVisible())
             {
-                secondString = FlatUI.TextField(TextTestWindow.IndexToRect(0), secondString);
+                secondString = FlatUI.TextField(TextTestWindow.IndexToRect(0), secondString, 30);
             }
             MainWindow.OnGUI();
             if (MainWindow.ContentVisible())

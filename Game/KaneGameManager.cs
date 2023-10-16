@@ -14,7 +14,7 @@ namespace Polygondwanaland.Game
     {
         public static string Directory = "";
         public static int CurrentScene = 0;
-        
+        public static bool DrawFPS = false;
 
         public static void Init()
         {
@@ -38,6 +38,10 @@ namespace Polygondwanaland.Game
             else if (CurrentScene == 2)
             {
                 GameOfLife.Update();
+            }
+            if (DrawFPS)
+            {
+                Raylib.DrawFPS(Raylib.GetScreenWidth() - 100, 0);
             }
         }
     }
