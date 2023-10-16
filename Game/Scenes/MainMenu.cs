@@ -12,9 +12,11 @@ namespace Polygondwanaland.Game.Scenes
     public static class MainMenu
     {
         private static Window MainWindow = new Window(Rect.FromCenter(Tools.ScreenCenterX(), Tools.ScreenCenterY(), 300, 800), "Polygondwanaland", new Color(232,75,75,255)) { showWindow = true };
+        private static Window TextTestWindow = new Window(Rect.FromCenter(Tools.ScreenCenterX() + 300, Tools.ScreenCenterY(), 800, 300), "Edit Text", new Color(232,75,75,255)) { showWindow = true };
         public static Color ClearColor = new Color(41, 75, 71, 255);
 
         private static string debugEditableString = "Hello Text Handler";
+        private static string secondString = "This is another text box, which I didnt consider when making this!";
 
         public static void Update()
         {
@@ -26,7 +28,14 @@ namespace Polygondwanaland.Game.Scenes
                 {
                     MainWindow.showWindow = true;
                     MainWindow.minimize = false;
+                    TextTestWindow.showWindow = true;
+                    TextTestWindow.minimize = false;
                 }
+            }
+            TextTestWindow.OnGUI();
+            if (TextTestWindow.ContentVisible())
+            {
+                secondString = FlatUI.TextField(TextTestWindow.IndexToRect(0), secondString);
             }
             MainWindow.OnGUI();
             if (MainWindow.ContentVisible())
@@ -40,8 +49,15 @@ namespace Polygondwanaland.Game.Scenes
                     KaneGameManager.CurrentScene = 2;
                 }
                 TextHandler.TextDebugVis = FlatUI.Check(MainWindow.IndexToRect(3), TextHandler.TextDebugVis, "Text Debug View");
-                
-                
+                TextHandler.IsSelection = FlatUI.Check(MainWindow.IndexToRect(4), TextHandler.IsSelection, "IsSelection");
+                if (FlatUI.Button(MainWindow.IndexToRect(5,2,0), "<<"))
+                {
+                    TextHandler.SelectionEndIndex--;
+                }
+                if (FlatUI.Button(MainWindow.IndexToRect(5, 2, 1), ">>"))
+                {
+                    TextHandler.SelectionEndIndex++;
+                }
             }
         }
     }

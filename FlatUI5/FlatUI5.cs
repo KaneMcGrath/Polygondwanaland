@@ -263,7 +263,16 @@ namespace Polygondwanaland.FlatUI5
                 Raylib.DrawTextEx(DefaultFont, message, new Vector2(x, y), fontSize, 0, Color.WHITE);
             }
         }
-
+        /// <summary>
+        /// Draw Text with the default font
+        /// Side: 0=topleft    1=topcenter    2=topright
+        ///       3=midleft    4=center       5=midright 
+        ///       6=bottomleft 7=bottomcenter 8=bottomright
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="message"></param>
+        /// <param name="side"></param>
+        /// <param name="draw"></param>
         public static void Label(Rect rect, string message, Color color, int fontSize = 20, int side = 0, bool draw = true)
         {
             if (draw)
@@ -318,7 +327,6 @@ namespace Polygondwanaland.FlatUI5
                 else if (side == 8) { x = rect.x + rect.width - (int)Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).X; y = rect.y + rect.height - (int)Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).Y; }
 
                 Box(rect, defaultTextFieldColor, defaultTextFieldOutlineColor);
-                Label(rect, text, fontSize, side);
                 return TextHandler.EditableText(rect, new Vector2(x, y), text, fontSize);
             }
             else
