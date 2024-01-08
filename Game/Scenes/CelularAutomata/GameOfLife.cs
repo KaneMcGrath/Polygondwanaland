@@ -36,15 +36,15 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
         private static int stepsPerSecond = 100;
         private static int maxStepsPerSecond = 100;
 
+        public static Camera mainCamera = new Camera(Vector2.Zero, 0f, 1f, 1000, 1000);
+
         private static void DrawBorders()
         {
-            Raylib.DrawRectangle((int)(View.ConvertXToViewTransformSpace(1f)), (int)(View.ConvertYToViewTransformSpace(1f)), (int)(18f * View.Scale), (int)(18f * View.Scale), Color.WHITE);
+            Raylib.DrawRectangle((int)(View.ConvertXToWorldSpace(1f)), (int)(View.ConvertYToWorldSpace(1f)), (int)(18f * View.Scale), (int)(18f * View.Scale), Color.WHITE);
             //Raylib.DrawRectangle((int)(Tools.ScreenCenterX() + (CameraPos.X * zoomLevel) + 1f * zoomLevel), (int)(Tools.ScreenCenterY() + (CameraPos.Y * zoomLevel) + 1f * zoomLevel), (int)(18f * zoomLevel), GameHeight * (int)(20f * zoomLevel), Color.WHITE);
             //Raylib.DrawRectangle((int)(Tools.ScreenCenterX() + (CameraPos.X * zoomLevel) + 20f * GameWidth * zoomLevel), (int)(Tools.ScreenCenterY() + (CameraPos.Y * zoomLevel) + 1f * zoomLevel), (int)(18f * zoomLevel), GameHeight * (int)(20f * zoomLevel), Color.WHITE);
             //Raylib.DrawRectangle((int)(Tools.ScreenCenterX() + (CameraPos.X * zoomLevel) + 1f * zoomLevel), (int)(Tools.ScreenCenterY() + (CameraPos.Y * zoomLevel) + 20f * GameHeight * zoomLevel), GameWidth * (int)(20f * zoomLevel), (int)(18f * zoomLevel), Color.WHITE);
         }
-
-        
 
         public static void Update()
         {
@@ -106,12 +106,9 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
                 }
             }
 
-            
-
             SettingsWindow.OnGUI();
             if (SettingsWindow.ContentVisible())
             {
-                
                 if (FlatUI.Button(SettingsWindow.IndexToRect(0,6,0), GamePaused ? ">" : "||"))
                 {
                     GamePaused = !GamePaused;

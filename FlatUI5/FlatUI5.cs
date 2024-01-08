@@ -614,6 +614,7 @@ namespace Polygondwanaland.FlatUI5
         /// <returns></returns>
         public static Rect[] transparentOutlineRects(Rect rect, int thickness)
         {
+            
             Rect[] result = new Rect[4];
             result[0] = new Rect(rect.x, rect.y, rect.width, thickness);
             result[1] = new Rect(rect.x, rect.y + rect.height - thickness, rect.width, thickness);

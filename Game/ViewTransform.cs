@@ -9,7 +9,7 @@ namespace Polygondwanaland.Game
 {
     /// <summary>
     /// Holds an offset Position and Scale
-    /// Has Functions to convert between screen coordinates and the transform coordinates
+    /// Has Functions to convert between screen coordinates and world coordinates
     /// and vice versa
     /// </summary>
     public class ViewTransform
@@ -34,7 +34,7 @@ namespace Polygondwanaland.Game
             return point + this.Offset + (this.Scale * point);
         }
 
-        public Vector2 ConvertToViewTransformSpace(Vector2 point)
+        public Vector2 ConvertToWorldSpace(Vector2 point)
         {
             return point - this.Offset / this.Scale;
         }
@@ -49,12 +49,12 @@ namespace Polygondwanaland.Game
             return this.Offset.Y + (this.Scale * y);
         }
 
-        public float ConvertXToViewTransformSpace(float x)
+        public float ConvertXToWorldSpace(float x)
         {
             return (x - this.Offset.X) / this.Scale;
         }
 
-        public float ConvertYToViewTransformSpace(float y)
+        public float ConvertYToWorldSpace(float y)
         {
             return (y - this.Offset.Y) / this.Scale;
         }
@@ -66,5 +66,7 @@ namespace Polygondwanaland.Game
             this.Scale += scale;
             this.Offset = new Vector2(Offset.X + (xFactor * scale),  Offset.Y + (yFactor * scale));
         }
+
+
     }
 }

@@ -9,7 +9,6 @@ namespace Polygondwanaland.Game
 {
     /// <summary>
     /// Handle The Inputbuffer and and add helpful functions to get keys and ignore when typing
-    /// 
     /// </summary>
     public static class InputManager
     {
@@ -163,13 +162,16 @@ namespace Polygondwanaland.Game
         /// <returns></returns>
         private static int IsCAPS(int key)
         {
-            if (GetKey(KeyboardKey.KEY_LEFT_SHIFT) || GetKey(KeyboardKey.KEY_RIGHT_SHIFT))
+            if (charDict.ContainsKey(key))
             {
-                if (GetKey(KeyboardKey.KEY_CAPS_LOCK)) return 0;
-                return 10000;
+                if (IsShiftKey())
+                {
+                    if (GetKey(KeyboardKey.KEY_CAPS_LOCK)) return 0;
+                    return 10000;
+                }
+                if (GetKey(KeyboardKey.KEY_CAPS_LOCK) && key >= 65 && key <= 90)
+                    return 10000;
             }
-            if (GetKey(KeyboardKey.KEY_CAPS_LOCK) && key >= 65 && key <= 90)
-                return 10000;
             return 0;
         }
 
@@ -190,6 +192,11 @@ namespace Polygondwanaland.Game
                 if (GetKey(modifier)) return true;
             }
             return false;
+        }
+
+        public static bool IsShiftKey()
+        {
+            return (InputManager.GetKey(KeyboardKey.KEY_LEFT_SHIFT) || InputManager.GetKey(KeyboardKey.KEY_RIGHT_SHIFT));
         }
 
         public static char[] GetChars()

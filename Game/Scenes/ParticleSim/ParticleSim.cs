@@ -28,6 +28,10 @@ namespace Polygondwanaland.Game.Scenes.ParticleSim
                 {
                     ControlWindow.showWindow = true;
                 }
+                if (FlatUI.Button(new Rect(300, (int)MenuBarPosition, 300, 30), "Exit"))
+                {
+                    KaneGameManager.CurrentScene = 0;
+                }
             }
             if (Raylib.GetMousePosition().Y < 30)
             {

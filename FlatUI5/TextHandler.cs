@@ -1,5 +1,4 @@
 ﻿using Polygondwanaland.Game;
-using Polygondwanaland.Game.Scenes;
 using Raylib_cs;
 using Color = Raylib_cs.Color;
 using System;
@@ -7,9 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Polygondwanaland.FlatUI5
 {
@@ -102,121 +99,16 @@ namespace Polygondwanaland.FlatUI5
                     }
 
                     //handle keyboard inputs
-                    if (InputManager.IsInputs)
-                    {
-                        for (int i = 0; i < InputManager.InputQueue.Count; i++)
-                        {
-                            int key = InputManager.InputQueue[i];
-                            if (!InputManager.IsModifierKey())
-                            {
-                                if (InputManager.IsChar(key))
-                                {
-                                    if (SelectionEndIndex - CursorIndex > 0)
-                                    {
-                                        text = text.Remove(CursorIndex, SelectionEndIndex - CursorIndex);
-                                        text = text.Insert(CursorIndex, InputManager.KeyboardKeyToChar(key).ToString());
-                                        CursorIndex++;
-                                        SelectionEndIndex = CursorIndex;
-                                    }
-                                    else
-                                    {
-                                        text = text.Insert(CursorIndex, InputManager.KeyboardKeyToChar(key).ToString());
-                                        CursorIndex++;
-                                        SelectionEndIndex = CursorIndex;
-                                    }
-                                    continue;
-                                }
-                                if (key == (int)KeyboardKey.KEY_LEFT)
-                                {
-                                    if (CursorIndex > 0)
-                                    {
-                                        CursorIndex--;
-                                        SelectionEndIndex= CursorIndex;
-                                    }
-                                }
-                                if (key == (int)KeyboardKey.KEY_RIGHT)
-                                {
-                                    if (CursorIndex < text.Length - 1)
-                                    {
-                                        CursorIndex++;
-                                        SelectionEndIndex = CursorIndex;
-                                    }
-                                }
-                                if (key == (int)KeyboardKey.KEY_BACKSPACE)
-                                {
-                                    
-                                    if (CursorIndex <= text.Length)
-                                    {
-                                        if (SelectionEndIndex - CursorIndex > 0)
-                                        {
-                                            text = text.Remove(CursorIndex, SelectionEndIndex - CursorIndex);
-                                            SelectionEndIndex = CursorIndex;
-                                        }
-                                        else if (CursorIndex > 0)
-                                        {
-                                            CursorIndex--;
-                                            SelectionEndIndex = CursorIndex;
-                                            text = text.Remove(CursorIndex, 1);
-                                        }
-                                    }
-                                    
-                                }
-                                if (key == (int)KeyboardKey.KEY_DELETE)
-                                {
-
-                                    if (CursorIndex < text.Length)
-                                    {
-                                        if (SelectionEndIndex - CursorIndex > 0)
-                                        {
-                                            text = text.Remove(CursorIndex, SelectionEndIndex - CursorIndex);
-                                            SelectionEndIndex = CursorIndex;
-                                        }
-                                        else
-                                        {
-                                            text = text.Remove(CursorIndex, 1);
-                                        }
-                                    }
-                                }
-                                if (key == (int)KeyboardKey.KEY_HOME)
-                                {
-                                    CursorIndex = 0;
-                                }
-                                if (key == (int)KeyboardKey.KEY_END)
-                                {
-                                    CursorIndex = text.Length;
-                                }
-                            }
-                            else
-                            {
-                                if (InputManager.GetKey(KeyboardKey.KEY_LEFT_CONTROL))
-                                {
-                                    if (key == 86) //KEY_V = 86
-                                    {
-                                        try
-                                        {
-                                            sbyte* s = Raylib.GetClipboardText();
-                                            string clip = new string(s);
-                                            text = text.Insert(CursorIndex, clip);
-                                            CursorIndex += clip.Length;
-                                        }
-                                        catch (Exception ex)
-                                        {
-
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    text = KeyboardInputs(text);
 
                     //Sanity Checks in case I suck
-
                     //if the string is modified elsewhere keep our cursor inbounds
                     if (CursorIndex > text.Length)
                     {
                         CursorIndex = text.Length;
                     }
                     if (SelectionEndIndex > text.Length) SelectionEndIndex = text.Length;
+                    if (SelectionEndIndex < CursorIndex) SelectionEndIndex = CursorIndex;
                     if (CursorIndex < 0) //not sure how this could ever happen
                     {
                         CursorIndex = 0;
@@ -238,7 +130,7 @@ namespace Polygondwanaland.FlatUI5
                             widthSum += charwidth;
                         }
                     }
-                    
+
                     //click the text to put the cursor somewhere
                     if (Raylib.IsMouseButtonPressed(0))
                     {
@@ -309,16 +201,19 @@ namespace Polygondwanaland.FlatUI5
                                     {
                                         SelectionEndIndex = CursorIndex;
                                     }
+
                                     widthSum3 += charwidth;
                                 }
                             }
                         }
                     }
 
-                    if (FlatUI.IsMouseInRect(textArea))
+
+                    if (TextDebugVis)
                     {
-                        if (TextDebugVis)
+                        if (FlatUI.IsMouseInRect(textArea))
                         {
+
                             float widthSum2 = 0f;
                             for (int c = 0; c < text.Length; c++)
                             {
@@ -386,6 +281,202 @@ namespace Polygondwanaland.FlatUI5
                 }
             }
             FlatUI.Label(selectArea, text, Color.BLACK, fontSize, 0);
+            return text;
+        }
+
+        private static string KeyboardInputs(string text)
+        {
+            if (InputManager.IsInputs)
+            {
+                for (int i = 0; i < InputManager.InputQueue.Count; i++)
+                {
+                    int key = InputManager.InputQueue[i];
+                    if (!InputManager.IsModifierKey())
+                    {
+                        if (InputManager.IsChar(key))
+                        {
+                            if (SelectionEndIndex - CursorIndex > 0)
+                            {
+                                text = text.Remove(CursorIndex, SelectionEndIndex - CursorIndex);
+                                text = text.Insert(CursorIndex, InputManager.KeyboardKeyToChar(key).ToString());
+                                CursorIndex++;
+                                SelectionEndIndex = CursorIndex;
+                            }
+                            else
+                            {
+                                text = text.Insert(CursorIndex, InputManager.KeyboardKeyToChar(key).ToString());
+                                CursorIndex++;
+                                SelectionEndIndex = CursorIndex;
+                            }
+                            continue;
+                        }
+                        if (key == (int)KeyboardKey.KEY_LEFT)
+                        {
+
+                            if (CursorIndex > 0)
+                            {
+                                CursorIndex--;
+                                if (!InputManager.IsShiftKey())
+                                    SelectionEndIndex = CursorIndex;
+                            }
+                        }
+                        if (key == (int)KeyboardKey.KEY_RIGHT)
+                        {
+                            if (CursorIndex < text.Length)
+                            {
+                                if (!InputManager.IsShiftKey())
+                                {
+                                    CursorIndex++;
+                                    SelectionEndIndex = CursorIndex;
+                                }
+                                else
+                                {
+                                    if (SelectionEndIndex < text.Length)
+                                    {
+                                        SelectionEndIndex++;
+                                    }
+                                }
+                            }
+                        }
+                        if (key == (int)KeyboardKey.KEY_BACKSPACE)
+                        {
+
+                            if (CursorIndex <= text.Length)
+                            {
+                                if (SelectionEndIndex - CursorIndex > 0)
+                                {
+                                    text = text.Remove(CursorIndex, SelectionEndIndex - CursorIndex);
+                                    SelectionEndIndex = CursorIndex;
+                                }
+                                else if (CursorIndex > 0)
+                                {
+                                    CursorIndex--;
+                                    SelectionEndIndex = CursorIndex;
+                                    text = text.Remove(CursorIndex, 1);
+                                }
+                            }
+                        }
+                        if (key == (int)KeyboardKey.KEY_DELETE)
+                        {
+                            if (CursorIndex < text.Length)
+                            {
+                                if (SelectionEndIndex - CursorIndex > 0)
+                                {
+                                    text = text.Remove(CursorIndex, SelectionEndIndex - CursorIndex);
+                                    SelectionEndIndex = CursorIndex;
+                                }
+                                else
+                                {
+                                    text = text.Remove(CursorIndex, 1);
+                                }
+                            }
+                        }
+                        if (key == (int)KeyboardKey.KEY_HOME)
+                        {
+                            CursorIndex = 0;
+                            if (!InputManager.IsShiftKey())
+                                SelectionEndIndex = CursorIndex;
+                        }
+                        if (key == (int)KeyboardKey.KEY_END)
+                        {
+                            if (!InputManager.IsShiftKey())
+                            {
+                                CursorIndex = text.Length;
+                                SelectionEndIndex = CursorIndex;
+                            }
+                            else
+                            {
+                                SelectionEndIndex = text.Length;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (InputManager.GetKey(KeyboardKey.KEY_LEFT_CONTROL))
+                        {
+                            if (key == 86) //KEY_V = 86
+                            {
+                                try
+                                {
+                                    if (SelectionEndIndex - CursorIndex > 0)
+                                    {
+                                        text = text.Remove(CursorIndex, SelectionEndIndex - CursorIndex);
+                                    }
+                                    sbyte* s = Raylib.GetClipboardText();
+                                    string clip = new string(s);
+                                    text = text.Insert(CursorIndex, clip);
+                                    CursorIndex += clip.Length;
+                                    SelectionEndIndex = CursorIndex;
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex.Message);
+                                }
+                            }
+                            if (key == 67) //KEY_C = 67
+                            {
+                                try
+                                {
+                                    byte[] bytes = Encoding.ASCII.GetBytes(text.Substring(CursorIndex, SelectionEndIndex - CursorIndex));
+                                    fixed (byte* b = bytes)
+                                    {
+                                        sbyte* sb = (sbyte*)b;
+                                        Raylib.SetClipboardText(sb);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex.Message);
+                                }
+                            }
+                            //Control + Left
+                            //jump to the previous word seperated by a space
+                            if (key == 263)//KEY_LEFT = 263
+                            {
+                                if (CursorIndex > 0)
+                                {
+                                    int space = text.LastIndexOf(' ', CursorIndex - 2, CursorIndex - 2);
+                                    if (space != -1)
+                                    {
+                                        CursorIndex = space + 1;
+                                    }
+                                    else
+                                    {
+                                        CursorIndex = 0;
+                                    }
+                                    SelectionEndIndex = CursorIndex;
+                                }
+                            }
+                            //Control + Right
+                            //jump to the next word seperated by a space
+                            if (key == 262)//KEY_RIGHT = 262
+                            {
+                                if (CursorIndex < text.Length)
+                                {
+                                    int space = text.IndexOf(' ', CursorIndex);
+                                    if (space != -1)
+                                    {
+                                        CursorIndex = space + 1;
+                                    }
+                                    else
+                                    {
+                                        CursorIndex = text.Length;
+                                    }
+                                    SelectionEndIndex = CursorIndex;
+                                }
+                            }
+                            //Control + A
+                            //Select All
+                            if (key == (int)(KeyboardKey.KEY_A))
+                            {
+                                CursorIndex = 0;
+                                SelectionEndIndex = text.Length;
+                            }
+                        }
+                    }
+                }
+            }
+
             return text;
         }
     }

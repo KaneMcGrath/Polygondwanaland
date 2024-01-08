@@ -8,7 +8,6 @@ using Polygondwanaland.FlatUI5;
 
 namespace Polygondwanaland.Game.Scenes
 {
-
     public static class MainMenu
     {
         private static Window MainWindow = new Window(Rect.FromCenter(Tools.ScreenCenterX(), Tools.ScreenCenterY(), 300, 800), "Polygondwanaland", new Color(232,75,75,255)) { showWindow = true };
