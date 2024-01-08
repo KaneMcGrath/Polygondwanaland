@@ -27,6 +27,7 @@ namespace Polygondwanaland.Game
         public static void Update()
         {
             InputManager.Update();
+            Time.Update();
             if (CurrentScene == 0)
             {
                 MainMenu.Update();

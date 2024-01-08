@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Raylib_cs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -17,16 +18,26 @@ namespace Polygondwanaland.Game
         public float Rotation = 0f;
         public float Zoom = 1f;
 
-        public int ViewportWidth { get; set; }
-        public int ViewportHeight { get; set; }
+        public int ViewportWidth 
+        {
+            get 
+            { 
+                return Raylib.GetScreenWidth(); 
+            }
+        }
+        public int ViewportHeight
+        {
+            get
+            {
+                return Raylib.GetScreenHeight();
+            }
+        }
 
-        public Camera(Vector2 position, float rotation, float zoom, int viewportWidth, int viewportHeight)
+        public Camera(Vector2 position, float rotation, float zoom)
         {
             Position = position;
             Rotation = rotation;
             Zoom = zoom;
-            ViewportWidth = viewportWidth;
-            ViewportHeight = viewportHeight;
         }
 
 
@@ -53,6 +64,11 @@ namespace Polygondwanaland.Game
                                                                     , out inverseTransformMatrix);
 
             return Vector2.Transform(screenPosition, inverseTransformMatrix);
+        }
+
+        public float Scale(float scale)
+        {
+            return Zoom * scale;
         }
     }
 }
