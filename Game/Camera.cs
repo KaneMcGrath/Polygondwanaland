@@ -40,6 +40,13 @@ namespace Polygondwanaland.Game
             Zoom = zoom;
         }
 
+        public Camera()
+        {
+            Position = Vector2.Zero;
+            Rotation = 0f;
+            Zoom = 1f;
+        }
+
 
 
         // Convert world space to screen space

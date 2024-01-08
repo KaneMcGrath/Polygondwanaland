@@ -325,7 +325,7 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
             if (Raylib.IsMouseButtonDown(0) && !Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT) && !SettingsWindow.isDragging && !FlatUI.IsDraggingSlider && !FlatUI.IsMouseInRect(SettingsWindow.rect))
             {
                 //CameraPos += Raylib.GetMouseDelta() / zoomLevel;
-                mainCamera.Position -= Raylib.GetMouseDelta();
+                mainCamera.Position -= Raylib.GetMouseDelta() * (1f / mainCamera.Zoom);
             }
             float zoomLevel = Raylib.GetMouseWheelMove() / 10f;
             if (Raylib.IsKeyDown(KeyboardKey.KEY_UP))
