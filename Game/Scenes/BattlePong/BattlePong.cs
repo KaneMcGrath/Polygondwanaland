@@ -32,7 +32,11 @@ namespace Polygondwanaland.Game.Scenes.BattlePong
         private static Window SettingsWindow = new Window(new Rect(Raylib.GetScreenWidth() - 300, 30, 300, 800), "Simulation") { showWindow = true, insideColor = new Color(55, 66, 77, 255), constraints = new Constraints(0, 0, 30, 0) };
         private static float MenuBarPosition = -30f;
 
-        public static float GameSpeed = 1f;
+        private static int stepsPerSecond = 100;
+        private static int maxStepsPerSecond = 1000;
+        private static float frameWaitTimer = 0f;
+
+        private static Random rand;
 
         public static void SetUpGame()
         {
@@ -50,14 +54,16 @@ namespace Polygondwanaland.Game.Scenes.BattlePong
             TeamColors = new Color[] { Color.RED, Color.BLUE };
             Vector2 P1Spawn = GetCellPos(0, yhalf);
             Vector2 P2Spawn = GetCellPos(GameYSize, yhalf);
-            Player1 = new PlayerBall(P1Spawn.X,P1Spawn.Y, 135, 135, 0);
-            Player2 = new PlayerBall(P2Spawn.X, P2Spawn.Y, -135, -135, 1);
+            Player1 = new PlayerBall(P1Spawn.X,P1Spawn.Y + 0.3f, 1, 1, 0);
+            Player2 = new PlayerBall(P2Spawn.X, P2Spawn.Y - 0.1f, -1, -1, 1);
+            rand = new Random(1);
             GameSetup = true;
         }
 
-        public static void GameLogic()
+        public static void SimulateStep()
         {
-
+            UpdatePlayer(Player1);
+            UpdatePlayer(Player2);
         }
 
         public static void Update()
@@ -68,8 +74,7 @@ namespace Polygondwanaland.Game.Scenes.BattlePong
                 MainCamera.CameraControls();
                 if (!GamePaused)
                 {
-                    UpdatePlayer(Player1);
-                    UpdatePlayer(Player2);
+
                 }
                 for (int y = 0; y < GameBoard.GetLength(0); y++)
                 {
@@ -126,7 +131,24 @@ namespace Polygondwanaland.Game.Scenes.BattlePong
                     SetUpGame();
                     GameSetup = true;
                 }
-                GameSpeed = (int)FlatUI.Slider(SettingsWindow.IndexToRect(10), GameSpeed, 0.1f, 50f);
+                FlatUI.Label(SettingsWindow.IndexToRect(9), "Steps Per Second", 20, 7);
+                stepsPerSecond = (int)FlatUI.Slider(SettingsWindow.IndexToRect(10), (float)stepsPerSecond, 1f, (float)maxStepsPerSecond);
+            }
+
+            if (GameSetup && !GamePaused)
+            {
+                if (stepsPerSecond >= maxStepsPerSecond)
+                {
+                    SimulateStep();
+                }
+                else
+                {
+                    float waitTime = 1f / (float)stepsPerSecond;
+                    if (Tools.timer(ref frameWaitTimer, waitTime))
+                    {
+                        SimulateStep();
+                    }
+                }
             }
         }
 
@@ -179,7 +201,7 @@ namespace Polygondwanaland.Game.Scenes.BattlePong
         private static void UpdatePlayer(PlayerBall player)
         {
             //Calculate next position
-            Vector2 NextPosition = player.Position + player.Velocity * Time.DeltaTime * GameSpeed;
+            Vector2 NextPosition = player.Position + player.Velocity;
             //check if next position is in bounds
             if (NextPosition.X < 0)
             {
@@ -223,7 +245,7 @@ namespace Polygondwanaland.Game.Scenes.BattlePong
                 {
                     player.Velocity.Y = -player.Velocity.Y;
                 }
-                NextPosition = player.Position + player.Velocity * Time.DeltaTime * GameSpeed;
+                NextPosition = player.Position + player.Velocity;
                 SetCellTeam(NextCell, player.team);
                 
             }
