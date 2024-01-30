@@ -11,13 +11,23 @@ namespace Polygondwanaland.Game
     /// </summary>
     public struct XY 
     {
-        public int x;
-        public int y;
+        public int X;
+        public int Y;
 
         public XY(int x, int y)
         {
-            this.x = x;
-            this.y = y;
+            this.X = x;
+            this.Y = y;
+        }
+
+        public static bool operator ==(XY A, XY B)
+        {
+            return (A.X == B.X && A.Y == B.Y);
+        }
+
+        public static bool operator !=(XY A, XY B)
+        {
+            return !(A == B);
         }
     }
 

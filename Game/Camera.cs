@@ -1,4 +1,5 @@
-﻿using Raylib_cs;
+﻿using Polygondwanaland.FlatUI5;
+using Raylib_cs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,31 @@ namespace Polygondwanaland.Game
             Zoom = 1f;
         }
 
-
+        /// <summary>
+        /// Deffault set of camera controls
+        /// </summary>
+        public void CameraControls()
+        {
+            if (Raylib.IsMouseButtonDown(0) && !Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT) && !FlatUI.IsDraggingSlider)
+            {
+                //CameraPos += Raylib.GetMouseDelta() / zoomLevel;
+                Position -= Raylib.GetMouseDelta() * (1f / Zoom);
+            }
+            float zoomDelta = (Raylib.GetMouseWheelMove() / 10f) * (MathF.Sqrt(Zoom) / 2f);
+            if (MathF.Abs(zoomDelta) > 0) Zoom += zoomDelta;
+            if (Zoom < 0f) Zoom = -Zoom;
+            if (Raylib.IsKeyDown(KeyboardKey.KEY_UP))
+            {
+                Zoom += 1f * Time.DeltaTime;
+            }
+            if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN))
+            {
+                Zoom -= 1f * Time.DeltaTime;
+            }
+            //Raylib.DrawCircle((int)View.ConvertXToScreenSpace(1000f), (int)View.ConvertYToScreenSpace(1000f), 10f, Color.GREEN);
+            //if (zoomLevel != 0f) View.ScaleFromPoint(1000f, 1000f, zoomLevel);
+            //if (View.Scale < 0.1f) View.Scale = 0.1f;
+        }
 
         // Convert world space to screen space
         public Vector2 WorldToScreen(Vector2 worldPosition)

@@ -322,20 +322,23 @@ namespace Polygondwanaland.Game.Scenes.CelularAutomata
 
         private static void CameraControl()
         {
-            if (Raylib.IsMouseButtonDown(0) && !Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT) && !SettingsWindow.isDragging && !FlatUI.IsDraggingSlider && !FlatUI.IsMouseInRect(SettingsWindow.rect))
+            if (!SettingsWindow.isDragging && !FlatUI.IsDraggingSlider)
             {
-                //CameraPos += Raylib.GetMouseDelta() / zoomLevel;
-                mainCamera.Position -= Raylib.GetMouseDelta() * (1f / mainCamera.Zoom);
+                mainCamera.CameraControls();
+                //mainCamera.Position -= Raylib.GetMouseDelta() * (1f / mainCamera.Zoom);
             }
-            float zoomLevel = Raylib.GetMouseWheelMove() / 10f;
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_UP))
-            {
-                mainCamera.Zoom += 1f * Time.DeltaTime;
-            }
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN))
-            {
-                mainCamera.Zoom -= 1f * Time.DeltaTime;
-            }
+            //float zoomDelta = (Raylib.GetMouseWheelMove() / 10f) * (MathF.Sqrt(mainCamera.Zoom) / 2f);
+            //if (MathF.Abs(zoomDelta) > 0) mainCamera.Zoom += zoomDelta;
+            //if (Raylib.IsKeyDown(KeyboardKey.KEY_UP))
+            //{
+            //    mainCamera.Zoom += 1f * Time.DeltaTime;
+            //}
+            //if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN))
+            //{
+            //    mainCamera.Zoom -= 1f * Time.DeltaTime;
+            //}
+
+
             //Raylib.DrawCircle((int)View.ConvertXToScreenSpace(1000f), (int)View.ConvertYToScreenSpace(1000f), 10f, Color.GREEN);
             //if (zoomLevel != 0f) View.ScaleFromPoint(1000f, 1000f, zoomLevel);
             //if (View.Scale < 0.1f) View.Scale = 0.1f;
