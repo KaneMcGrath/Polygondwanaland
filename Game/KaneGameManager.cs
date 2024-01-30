@@ -7,6 +7,7 @@ using Polygondwanaland.Game;
 using Polygondwanaland.Game.Scenes;
 using Polygondwanaland.Game.Scenes.ParticleSim;
 using Polygondwanaland.Game.Scenes.CelularAutomata;
+using Polygondwanaland.Game.Scenes.BattlePong;
 
 namespace Polygondwanaland.Game
 {
@@ -14,7 +15,7 @@ namespace Polygondwanaland.Game
     {
         public static string Directory = "";
         public static int CurrentScene = 0;
-        public static bool DrawFPS = false;
+        public static bool DrawFPS = true;
 
         public static void Init()
         {
@@ -39,6 +40,14 @@ namespace Polygondwanaland.Game
             else if (CurrentScene == 2)
             {
                 GameOfLife.Update();
+            }
+            else if (CurrentScene == 3)
+            {
+                GameOfLife.Update();
+            }
+            else if (CurrentScene == 4)
+            {
+                BattlePong.Update();
             }
             if (DrawFPS)
             {

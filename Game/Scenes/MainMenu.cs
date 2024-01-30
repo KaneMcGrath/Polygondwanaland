@@ -47,13 +47,21 @@ namespace Polygondwanaland.Game.Scenes
                 {
                     KaneGameManager.CurrentScene = 2;
                 }
-                TextHandler.TextDebugVis = FlatUI.Check(MainWindow.IndexToRect(3), TextHandler.TextDebugVis, "Text Debug View");
-                TextHandler.IsSelection = FlatUI.Check(MainWindow.IndexToRect(4), TextHandler.IsSelection, "IsSelection");
-                if (FlatUI.Button(MainWindow.IndexToRect(5,2,0), "<<"))
+                if (FlatUI.Button(MainWindow.IndexToRect(2), "Orbit Test"))
+                {
+                    KaneGameManager.CurrentScene = 3;
+                }
+                if (FlatUI.Button(MainWindow.IndexToRect(3), "BattlePong"))
+                {
+                    KaneGameManager.CurrentScene = 4;
+                }
+                TextHandler.TextDebugVis = FlatUI.Check(MainWindow.IndexToRect(8), TextHandler.TextDebugVis, "Text Debug View");
+                TextHandler.IsSelection = FlatUI.Check(MainWindow.IndexToRect(9), TextHandler.IsSelection, "IsSelection");
+                if (FlatUI.Button(MainWindow.IndexToRect(10,2,0), "<<"))
                 {
                     TextHandler.SelectionEndIndex--;
                 }
-                if (FlatUI.Button(MainWindow.IndexToRect(5, 2, 1), ">>"))
+                if (FlatUI.Button(MainWindow.IndexToRect(10, 2, 1), ">>"))
                 {
                     TextHandler.SelectionEndIndex++;
                 }
