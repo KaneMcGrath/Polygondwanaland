@@ -624,13 +624,13 @@ namespace Polygondwanaland.FlatUI5
             }
             //int divisions, int j, int n = 1
             //div = 8, j = 6
-            if (FlatUI.Button(new Rect(rect.x + (rect.width / 8 * 6), rect.y, (rect.width / 8), rect.height), "▲", draw))
+            if (FlatUI.Button(new Rect(rect.x + (rect.width / 8 * 6), rect.y, (rect.width / 8), rect.height), "+", draw))
             {
                 float result = value + step;
                 textBoxString = result.ToString();
                 return result;
             }
-            if (FlatUI.Button(new Rect(rect.x + (rect.width / 8 * 7), rect.y, (rect.width / 8), rect.height), "▼", draw))
+            if (FlatUI.Button(new Rect(rect.x + (rect.width / 8 * 7), rect.y, (rect.width / 8), rect.height), "-", draw))
             {
                 float result = value - step;
                 textBoxString = result.ToString();
