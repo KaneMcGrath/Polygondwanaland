@@ -19,7 +19,7 @@ namespace Polygondwanaland.Game
 
         public static void Init()
         {
-            FlatUI.DefaultFont = Raylib.LoadFontEx(Environment.CurrentDirectory + "\\Fonts\\OpenSans_SemiCondensed-Bold.ttf", 64, null, 0);
+            FlatUI.DefaultFont = Raylib.LoadFontEx(Environment.CurrentDirectory + "\\Fonts\\OtomanopeeOne-Regular.ttf", 64, null, 0);
             Raylib.SetWindowState(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             InputManager.Init();
             while (!Raylib.IsFontReady(FlatUI.DefaultFont));
