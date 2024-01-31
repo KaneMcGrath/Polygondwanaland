@@ -1,4 +1,5 @@
-﻿using Raylib_cs;
+﻿using Polygondwanaland.Game;
+using Raylib_cs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -605,6 +606,37 @@ namespace Polygondwanaland.FlatUI5
             }
 
             return newValue;
+        }
+
+        public static float NumberSelector(Rect rect, string label, float value, ref string textBoxString, float step = 1f, float min = float.MinValue, float max = float.MaxValue, bool draw = true)
+        {
+            //new Rect(source.x + (source.width / (float)divisions * (float)j), source.y, (float)n * (source.width / (float)divisions), source.height);
+            //RTools.SplitH(rect, 2, 0)
+            Label(new Rect(rect.x, rect.y, (rect.width / 2), rect.height), label, 20, 3, draw);
+            //8, 4, 2
+            textBoxString = TextField(new Rect(rect.x + (rect.width / 8 * 4), rect.y, 2 * (rect.width / 8), rect.height), textBoxString, 20, 4, draw);
+            if (float.TryParse(textBoxString, out float f))
+            {
+                if (f != value)
+                {
+                    return f;
+                }
+            }
+            //int divisions, int j, int n = 1
+            //div = 8, j = 6
+            if (FlatUI.Button(new Rect(rect.x + (rect.width / 8 * 6), rect.y, (rect.width / 8), rect.height), "▲", draw))
+            {
+                float result = value + step;
+                textBoxString = result.ToString();
+                return result;
+            }
+            if (FlatUI.Button(new Rect(rect.x + (rect.width / 8 * 7), rect.y, (rect.width / 8), rect.height), "▼", draw))
+            {
+                float result = value - step;
+                textBoxString = result.ToString();
+                return result;
+            }
+            return value;
         }
 
         /// <summary>
