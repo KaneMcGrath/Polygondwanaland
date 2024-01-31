@@ -315,7 +315,7 @@ namespace Polygondwanaland.FlatUI5
         {
             if (draw)
             {
-
+                side = 0;
                 int x = rect.x;
                 int y = rect.y;
                 if (side == 1) { x = rect.x + rect.width / 2 - (int)(Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).X / 2f); }
@@ -328,7 +328,8 @@ namespace Polygondwanaland.FlatUI5
                 else if (side == 8) { x = rect.x + rect.width - (int)Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).X; y = rect.y + rect.height - (int)Raylib.MeasureTextEx(DefaultFont, text, fontSize, 0).Y; }
 
                 Box(rect, defaultTextFieldColor, defaultTextFieldOutlineColor);
-                return TextHandler.EditableText(rect, new Vector2(x, y), text, fontSize);
+                Rect Margin = new Rect(rect.x + 2, rect.y + 2, rect.width - 2, rect.height - 2);
+                return TextHandler.EditableText(Margin, new Vector2(x, y), text, fontSize);
             }
             else
                 return text;
