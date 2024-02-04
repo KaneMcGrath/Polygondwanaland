@@ -20,6 +20,11 @@ namespace Polygondwanaland.Game
             this.Y = y;
         }
 
+        public override string ToString()
+        {
+            return "<" + X + "," + Y + ">";
+        }
+
         public static bool operator ==(XY A, XY B)
         {
             return (A.X == B.X && A.Y == B.Y);
