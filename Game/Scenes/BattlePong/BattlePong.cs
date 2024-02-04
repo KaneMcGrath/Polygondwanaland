@@ -54,6 +54,8 @@ namespace Polygondwanaland.Game.Scenes.BattlePong
         private static float[] PlayerVelocities = new float[] { 1f,1f,-1f,-1f };
         private static int[] GameSettings = new int[] { 32, 32 };
         public static float Score = 0f; //representation of the total area of the board a player controls from -1 to 1
+        private static int debugTeam1Tiles = 0;
+        private static int debugTeam2Tiles = 0;
 
         private static Random rand;
 
@@ -80,8 +82,40 @@ namespace Polygondwanaland.Game.Scenes.BattlePong
             rand = new Random(1); //static seed for determinism
             GameSetup = true;
             frameCount = 0;
+            Score = 0f;
         }
         
+        /// <summary>
+        /// Count the tiles held by Team 1 vs Team 2 and return a value from 0 to 1 where 0 is team 1 and 1 is team 2
+        /// </summary>
+        /// <returns></returns>
+        public static float CalculateScore()
+        {
+            int team1 = 0;
+            int team2 = 0;
+            //count cells for each team
+            for (int x = 0; x < GameBoard.GetLength(0); x++)
+            {
+                for (int y = 0; y < GameBoard.GetLength(1); y++)
+                {
+                    if (GameBoard[x, y] == 0)
+                    {
+                        team1++;
+                    }
+                    else
+                    {
+                        team2++;
+                    }
+                }
+            }
+
+            debugTeam1Tiles = team1;
+            debugTeam2Tiles = team2;
+
+            //get Percentage of team 1 territory from 0-1
+            return (float)team1 / (float)(team1 + team2);
+
+        }
 
         public static void SimulateStep()
         {
@@ -147,6 +181,9 @@ namespace Polygondwanaland.Game.Scenes.BattlePong
                     FlatUI.Label(new Rect(10, 130, 200, 30), "IsCorner: " + DebugIsNextCaseCorner.ToString());
                     FlatUI.Label(new Rect(10, 160, 400, 30), "CornerCases: [Left:" + DebugLRTB[0] + "] [Right:" + DebugLRTB[1] + "] Top:[" + DebugLRTB[2] + "] [Bottom:" + DebugLRTB[3] + "]");
                     FlatUI.Label(new Rect(10, 190, 400, 30), "Frame: " + frameCount);
+                    FlatUI.Label(new Rect(10, 220, 400, 30), "Score: " + CalculateScore());
+                    FlatUI.Label(new Rect(10, 250, 400, 30), "Team1: " + debugTeam1Tiles);
+                    FlatUI.Label(new Rect(10, 280, 400, 30), "Team2: " + debugTeam2Tiles);
                 }
             }
 
